@@ -404,12 +404,21 @@ const buildMindmapElements = (root: MindmapNode, themeId: MindmapThemeId) => {
       backgroundColor,
       strokeWidth,
       groupIds: [nodeGroupId],
+    }) as NonDeletedExcalidrawElement;
+
+    // 使用 Excalidraw 的 bound text 机制，让文字真正“嵌入”到矩形中
+    (textElement as any).containerId = rectElement.id;
+    Object.assign(rectElement, {
+      boundElements: [
+        ...(rectElement.boundElements || []),
+        { type: "text", id: (textElement as any).id },
+      ],
     });
 
-    elements.push(rectElement as NonDeletedExcalidrawElement);
+    elements.push(rectElement);
     elements.push(textElement as NonDeletedExcalidrawElement);
 
-    return rectElement as NonDeletedExcalidrawElement;
+    return rectElement;
   };
 
   positioned.forEach((node, index) => {

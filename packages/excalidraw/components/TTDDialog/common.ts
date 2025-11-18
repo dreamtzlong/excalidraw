@@ -150,22 +150,16 @@ interface MindmapNode {
   children?: MindmapNode[];
 }
 
-const clampMindmapTree = (node: MindmapNode, depth: number = 0): MindmapNode => {
-  const MAX_DEPTH = 3;
-  const MAX_CHILDREN_LEVEL1 = 6;
-  const MAX_CHILDREN_OTHER = 4;
+const clampMindmapTree = (node: MindmapNode): MindmapNode => {
+  const children = node.children || [];
 
-  const maxChildren = depth === 0 ? MAX_CHILDREN_LEVEL1 : MAX_CHILDREN_OTHER;
-
-  const children = (node.children || []).slice(0, maxChildren);
-
-  if (depth >= MAX_DEPTH - 1 || children.length === 0) {
+  if (children.length === 0) {
     return { topic: node.topic };
   }
 
   return {
     topic: node.topic,
-    children: children.map((child) => clampMindmapTree(child, depth + 1)),
+    children: children.map((child) => clampMindmapTree(child)),
   };
 };
 
